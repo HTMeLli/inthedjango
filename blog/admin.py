@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import Post, Vendor, Supplement, Form, Unit, Active, Content, Shop, ShoppingItem
+from .models import Vendor, Supplement, Form, Unit, ActiveIngredient, Content, Shop, ShoppingItem
 
-admin.site.register(Post)
 admin.site.register(Vendor)
 
 
@@ -22,7 +21,7 @@ class SupplementAdmin(admin.ModelAdmin):
 
 admin.site.register(Form)
 admin.site.register(Unit)
-admin.site.register(Active)
+admin.site.register(ActiveIngredient)
 admin.site.register(Content)
 admin.site.register(Shop)
 admin.site.register(ShoppingItem)
