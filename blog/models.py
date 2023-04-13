@@ -76,6 +76,7 @@ class ShoppingItem(models.Model):
     supplement = models.ForeignKey(Supplement, on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=19, decimal_places=2)
+    product_url = models.URLField(max_length=2048)
 
     def __str__(self):
         return self.price

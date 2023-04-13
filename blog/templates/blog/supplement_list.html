@@ -1,0 +1,8 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+{% for supplement in supplements %}
+<article>
+    <h2>{{ supplement.name }}</h2>
+</article>
+{% endfor %}
+{% endblock %}
