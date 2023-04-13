@@ -54,8 +54,8 @@ class Supplement(models.Model):
     name = models.CharField(max_length=200)
     amount = models.PositiveIntegerField()
     active_ingredients = models.ManyToManyField(
-        ActiveIngredient, through="Content", blank=True, null=True)
-    ingredients = models.ManyToManyField(Ingredient, blank=True, null=True)
+        ActiveIngredient, through="Content", blank=True)
+    ingredients = models.ManyToManyField(Ingredient, blank=True)
 
     def __str__(self):
         return self.name
