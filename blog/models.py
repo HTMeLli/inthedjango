@@ -20,6 +20,7 @@ class Form(models.Model):
 
 class ActiveIngredient(models.Model):
     name = models.CharField(max_length=200)
+    # interactons = many to many with self
 
     def __str__(self):
         return self.name
@@ -35,6 +36,9 @@ class Unit(models.Model):
 class Shop(models.Model):
     name = models.CharField(max_length=200)
     url = models.URLField(max_length=2048)
+    min_order_value_free_shipping = models.DecimalField(
+        max_digits=20, decimal_places=2)
+    shipping_price = models.DecimalField(max_digits=20, decimal_places=2)
 
     def __str__(self):
         return self.name
@@ -75,8 +79,23 @@ class Content(models.Model):
 class ShoppingItem(models.Model):
     supplement = models.ForeignKey(Supplement, on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=19, decimal_places=2)
     product_url = models.URLField(max_length=2048)
 
     def __str__(self):
-        return self.price
+        return self.product_url
+
+
+class Price(models.Model):
+    class Tax(models.IntegerChoices):
+        TAX_7 = 7
+        TAX_19 = 19
+        TAX_CHOICES = (
+            (TAX_7, '7%'),
+            (TAX_19, '19%'),
+        )
+    price_net = models.DecimalField(max_digits=19, decimal_places=2)
+    tax = models.IntegerField(choices=Tax.choices)
+
+    def __str__(self):
+        result = self.price_net + self.price_net*self.tax/100
+        return f"{result:.2f}"
