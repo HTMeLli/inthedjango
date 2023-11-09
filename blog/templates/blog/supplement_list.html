@@ -2,7 +2,11 @@
 {% block content %}
 {% for supplement in supplements %}
 <article>
-    <h2>{{ supplement.name }}</h2>
+    <h5>{{ supplement.name }}</h5>
+    {% for ingredient in ingredients %}
+    <p> {{ ingredient.name }}
+    </p>
+    {% endfor %}
 </article>
 {% endfor %}
 {% endblock %}

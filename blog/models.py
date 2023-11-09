@@ -27,9 +27,10 @@ class Connection(models.Model):
 
 class ActiveIngredient(models.Model):
     name = models.CharField(max_length=200)
-    connection = models.ManyToManyField(Connection, null=True, blank=True)
+    connection = models.ManyToManyField(Connection, blank=True)
     # interactons = many to many with self powered by chatGPT ;-)
-    interactions = models.ManyToManyField('self', symmetrical=False)
+    interactions = models.ManyToManyField(
+        'self', symmetrical=False, blank=True)
 
     def __str__(self):
         return self.name
@@ -69,11 +70,14 @@ class Supplement(models.Model):
     form = models.ForeignKey(Form, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     amount = models.PositiveIntegerField()
+    daily_dose = models.DecimalField(
+        max_digits=20, decimal_places=2, blank=True, null=True)
     active_ingredients = models.ManyToManyField(
         ActiveIngredient, through="Content", blank=True)
     ingredients = models.ManyToManyField(Ingredient, blank=True)
     traces = models.ManyToManyField(Trace, blank=True)
     special_labels = models.ManyToManyField(SpecialLabel, blank=True)
+    intake_note = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -85,6 +89,8 @@ class Content(models.Model):
         ActiveIngredient, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     dose = models.DecimalField(max_digits=20, decimal_places=2)
+    connection = models.ForeignKey(
+        Connection, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"{self.supplement.name}: {self.active_ingredient.name} ({self.dose} {self.unit.name})"
@@ -128,7 +134,7 @@ class Discount(models.Model):
         max_digits=19, decimal_places=2, null=True, blank=True)
     discount_url = models.URLField(max_length=2048, null=True, blank=True)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
-    item = models.ManyToManyField(ShoppingItem, null=True, blank=True)
+    item = models.ManyToManyField(ShoppingItem, blank=True)
 
     def __str__(self):
         return self.name
@@ -136,15 +142,22 @@ class Discount(models.Model):
 
 class Price(models.Model):
     class Tax(models.IntegerChoices):
-        TAX_7 = 7
-        TAX_19 = 19
-        TAX_CHOICES = (
-            (TAX_7, '7%'),
-            (TAX_19, '19%'),
-        )
+        TAX_7 = 7, '7%'
+        TAX_19 = 19, '19%'
     price_net = models.DecimalField(max_digits=19, decimal_places=2)
-    tax = models.IntegerField(choices=Tax.choices)
+    tax = models.IntegerField(choices=Tax.choices, default=Tax.TAX_19)
 
     def __str__(self):
         result = self.price_net + self.price_net*self.tax/100
         return f"{result:.2f}"
+
+
+class Alias(models.Model):
+    name = models.CharField(max_length=200, blank=True)
+    trace = models.ForeignKey(Trace, on_delete=models.CASCADE)
+    activeIngredient = models.ForeignKey(
+        ActiveIngredient, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name

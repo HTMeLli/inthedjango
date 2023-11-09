@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ingredient, Vendor, Supplement, Form, Unit, ActiveIngredient, Content, Shop, ShoppingItem
+from .models import Ingredient, Vendor, Supplement, Form, Unit, ActiveIngredient, Content, Shop, ShoppingItem, Connection, Trace, SpecialLabel, Discount, Price, Alias
 
 admin.site.register(Vendor)
 
@@ -26,3 +26,9 @@ admin.site.register(Content)
 admin.site.register(Shop)
 admin.site.register(ShoppingItem)
 admin.site.register(Ingredient)
+admin.site.register(Connection)
+admin.site.register(Trace)
+admin.site.register(SpecialLabel)
+admin.site.register(Discount)
+admin.site.register(Price)
+admin.site.register(Alias)
