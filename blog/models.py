@@ -106,11 +106,27 @@ class Shop(models.Model):
     def __str__(self):
         return self.name
 
+class Price(models.Model):
+    class Tax(models.IntegerChoices):
+        TAX_7 = 7, '7%'
+        TAX_19 = 19, '19%'
+    price_net = models.DecimalField(max_digits=19, decimal_places=2)
+    tax = models.IntegerField(choices=Tax.choices, default=Tax.TAX_19)
+
+    def __str__(self):
+        result = self.price_net + self.price_net*self.tax/100
+        return f"{result:.2f}"
 
 class ShoppingItem(models.Model):
-    supplement = models.ForeignKey(Supplement, on_delete=models.CASCADE)
+    supplement = models.ForeignKey(Supplement, related_name="shoppingitems", on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     product_url = models.URLField(max_length=2048)
+    price = models.OneToOneField(
+        Price, 
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.product_url
@@ -138,18 +154,6 @@ class Discount(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Price(models.Model):
-    class Tax(models.IntegerChoices):
-        TAX_7 = 7, '7%'
-        TAX_19 = 19, '19%'
-    price_net = models.DecimalField(max_digits=19, decimal_places=2)
-    tax = models.IntegerField(choices=Tax.choices, default=Tax.TAX_19)
-
-    def __str__(self):
-        result = self.price_net + self.price_net*self.tax/100
-        return f"{result:.2f}"
 
 
 class Alias(models.Model):

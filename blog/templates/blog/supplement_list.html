@@ -7,6 +7,10 @@
     <p> {{ ingredient.name }}
     </p>
     {% endfor %}
+    {% for shoppingitem in supplement.shoppingitems.all %}
+    <a href="">{{ shoppingitem.product_url }}</a>
+    <p>{{shoppingitem.price}}</p>
+    {% endfor %}
 </article>
 {% endfor %}
 {% endblock %}
